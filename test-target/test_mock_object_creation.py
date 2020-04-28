@@ -20,12 +20,27 @@ class TestMockBuilder(TestCase):
     def test_json_mock(self):
         x = Mock()
         b = x
-        b.loads('{"A1": "V1"}')
+        result = b.loads('{"A1": "V1"}')
+        print("json loads result is :{0}".format(result))
+        b.loads.return_value = "Completed"
+        result = b.loads('{"A1": "V1"}')
+        print("json loads result is :{0}".format(result))
         b.loads.assert_called()
         b.loads.assert_called_with('{"A1": "V1"}')
-        b.loads.assert_called_once_with('{"A1": "V1"}')
+        #b.loads.assert_called_once_with('{"A1": "V1"}')
         print("json mock x is:{}".format(x))
         print("json mock ref b is:{}".format(b))
+        print("call count is:{}".format(b.loads.call_count))
+        print("call args is:{}".format(b.loads.call_args))
+        print("call args list is:{}".format(b.loads.call_args_list))
+        print("method_calls is:{}".format(b.method_calls))
+
+    def test_json_return_value_with_mock(self):
+        mocked_json = Mock()
+        print("mocked json return value:{0}".format(mocked_json.loads('{"A1": "V1"}')))
+        mocked_json.loads.return_value = "{'result':'Completed'}"
+        print("controlled return value is:{0}".format(mocked_json.loads("{a:b}")))
+        assert mocked_json.loads("{a:b}") == "{'result':'Completed'}"
 
 
 class SimpleClass:
